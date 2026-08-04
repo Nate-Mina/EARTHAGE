@@ -1,0 +1,691 @@
+---
+layout: none
+---
+{% raw %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short-Timescale Geochronology | Comprehensive Research Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root {
+            /* Dark-mode palette */
+            --earth-900: #f5f5f4;
+            --earth-800: #d6d3d1;
+            --clay: #d2a679;
+            --sand: #0c0a09;            /* page background (near-black) */
+            --surface: #1c1917;        /* card / raised surface */
+            --surface-2: #292524;      /* alt surface */
+            --border: #3f3a35;         /* hairline borders */
+            --muted: #a8a29e;          /* secondary text */
+            --amber-accent: #f59e0b;
+            --amber-soft: #fbbf24;
+        }
+
+        html { background-color: var(--sand); }
+
+        body {
+            background-color: var(--sand);
+            color: var(--earth-900);
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
+            height: 380px;
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        .ref-card {
+            border-left: 4px solid var(--clay);
+            transition: all 0.3s ease;
+        }
+        .ref-card:hover {
+            border-left-color: var(--amber-accent);
+            background-color: var(--surface-2);
+            transform: translateX(5px);
+        }
+
+        .data-stat {
+            background: linear-gradient(135deg, #292524 0%, #3f3a35 100%);
+        }
+
+        /* Smooth dark scrollbars */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #0c0a09; }
+        ::-webkit-scrollbar-thumb { background: #3f3a35; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #57534e; }
+
+        ::selection { background: #f59e0b; color: #0c0a09; }
+
+        /* ===== DARK MODE OVERRIDES =====
+           The markup uses Tailwind's "light" utility names (white / stone-50..900).
+           These rules remap them to a true dark palette. stone-900 is kept dark
+           on purpose — it drives the intentional dark accent panels. */
+        .bg-white, .bg-white\/90 { background-color: var(--surface) !important; }
+        .bg-stone-50  { background-color: var(--surface) !important; }
+        .bg-stone-100 { background-color: var(--surface-2) !important; }
+        .bg-amber-50  { background-color: #2a1a0a !important; }
+
+        .border-stone-200,
+        .border-stone-100,
+        .border-stone-50,
+        .divide-stone-100 > *,
+        .divide-y > * { border-color: var(--border) !important; }
+
+        .text-stone-300, .text-stone-400,
+        .text-stone-500, .text-stone-600 { color: var(--muted) !important; }
+        .text-stone-800, .text-stone-900 { color: var(--earth-900) !important; }
+
+        /* Amber/red accent text must stay light so it reads on dark cards */
+        .text-amber-700, .text-amber-800, .text-amber-900 { color: var(--amber-soft) !important; }
+        .text-red-600, .text-red-700 { color: #f87171 !important; }
+    </style>
+</head>
+<body class="selection:bg-amber-500">
+
+    <!-- NAVIGATION -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-amber-700 rounded-full flex items-center justify-center text-white font-bold">G</div>
+                <span class="text-xl font-bold tracking-tight">Geochronology<span class="text-amber-700">Research</span></span>
+            </div>
+            <div class="hidden lg:flex space-x-8 text-xs font-bold uppercase tracking-widest text-stone-600">
+                <a href="#physical" class="hover:text-amber-700 transition">Physical Evidence</a>
+                <a href="#tips" class="hover:text-amber-700 transition">Quick Tips</a>
+                <a href="#geodynamics" class="hover:text-amber-700 transition">Geodynamics</a>
+                <a href="#genomics" class="hover:text-amber-700 transition">Genomics & Repeats</a>
+                <a href="#decay" class="hover:text-amber-700 transition">Dating Flaws</a>
+                <a href="#references" class="px-4 py-2 bg-stone-900 text-white rounded-full hover:bg-amber-700 transition">References</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative pt-24 pb-32 px-6 overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <h1 class="text-5xl md:text-7xl font-bold mb-8 leading-tight">Empirical Evidence for a <span class="italic text-amber-700">Short-Timescale</span> Earth</h1>
+            <p class="text-xl text-stone-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+                A data-driven exploration of why current geochronological models are highly sensitive to environmental cataclysm and why physical data suggests an age under 10,000 years.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#physical" class="px-8 py-4 bg-amber-700 text-white rounded-lg font-bold shadow-lg hover:bg-amber-800 transition">Explore Data</a>
+                <div class="px-8 py-4 bg-white border border-stone-200 rounded-lg font-bold text-stone-800">25+ Research Citations</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- QUICK TIPS: GRAPHIC INFOCARDS (Age of the Earth ≈ 6,000 yrs or less) -->
+    <section id="tips" class="border-t border-stone-200 py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-amber-700 font-bold uppercase tracking-widest text-sm">Quick-Read Graphics</span>
+                <h2 class="text-4xl font-bold mt-4 mb-4">The Earth Is ~6,000 Years Old (or Less)</h2>
+                <p class="text-stone-600 leading-relaxed">Five bite-size visuals you can share. Each points at a physical measurement that fits a young-age timeline and breaks under the "billions of years" assumption.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- TIP 1: Helium -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Crystal with escaping helium atoms">
+                            <rect x="46" y="34" width="28" height="52" rx="4" fill="#3f3a35" stroke="#d2a679" stroke-width="2"/>
+                            <circle cx="60" cy="60" r="4" fill="#f59e0b"/>
+                            <g fill="#fbbf24">
+                                <circle cx="40" cy="44" r="3.5"/><circle cx="82" cy="50" r="3.5"/>
+                                <circle cx="38" cy="74" r="3.5"/><circle cx="84" cy="80" r="3.5"/>
+                            </g>
+                            <path d="M40 44 L34 38 M82 50 L90 44 M38 74 L30 80 M84 80 L92 86" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Zircon Helium Won't Stay</h3>
+                    <p class="text-sm text-stone-600">Helium leaks out of the Fenton Hill zircons fast. If Earth were 1.5 billion years old, <strong>0% should remain</strong> — yet 58% is still there. That only fits a <strong>~6,000-year</strong> clock.</p>
+                </div>
+
+                <!-- TIP 2: Carbon-14 in diamonds -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Diamond containing C-14">
+                            <polygon points="60,28 84,52 60,92 36,52" fill="#292524" stroke="#fbbf24" stroke-width="2"/>
+                            <polygon points="60,28 84,52 60,52 36,52" fill="#3f3a35"/>
+                            <text x="60" y="66" font-size="20" fill="#f59e0b" text-anchor="middle" font-family="monospace" font-weight="bold">C¹⁴</text>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">C-14 in "Ancient" Diamonds</h3>
+                    <p class="text-sm text-stone-600">Carbon-14 dies in ~100,000 yrs. It shows up <strong>inside diamonds</strong> claimed to be 1–3 billion years old — proof they aren't that old.</p>
+                </div>
+
+                <!-- TIP 3: Discordant clocks -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Two clocks disagreeing">
+                            <circle cx="42" cy="60" r="20" fill="none" stroke="#d2a679" stroke-width="2"/>
+                            <line x1="42" y1="60" x2="42" y2="46" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="42" y1="60" x2="54" y2="66" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="84" cy="60" r="20" fill="none" stroke="#d2a679" stroke-width="2"/>
+                            <line x1="84" y1="60" x2="84" y2="48" stroke="#f87171" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="84" y1="60" x2="72" y2="56" stroke="#f87171" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M64 60 L68 56" stroke="#f87171" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Dating Clocks Disagree</h3>
+                    <p class="text-sm text-stone-600">Same Grand Canyon rock, four methods: ages off by <strong>hundreds of millions of years</strong>. If dating were settled fact, the clocks would match.</p>
+                </div>
+
+                <!-- TIP 4: Soft tissue -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Preserved blood vessel">
+                            <rect x="22" y="54" width="76" height="12" rx="6" fill="#3f3a35" stroke="#d2a679" stroke-width="2"/>
+                            <circle cx="38" cy="60" r="3" fill="#f87171"/>
+                            <circle cx="54" cy="60" r="3" fill="#f87171"/>
+                            <circle cx="70" cy="60" r="3" fill="#f87171"/>
+                            <circle cx="86" cy="60" r="3" fill="#f87171"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Soft Tissue in Dino Bone</h3>
+                    <p class="text-sm text-stone-600"><em>Science</em> (2005) found flexible blood vessels in <em>T. rex</em> bone. Organic matter can't survive <strong>65+ million years</strong> — but fits thousands.</p>
+                </div>
+
+                <!-- TIP 5: Magnetic field decay -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Earth magnetic field decaying">
+                            <circle cx="60" cy="60" r="10" fill="#292524" stroke="#fbbf24" stroke-width="2"/>
+                            <path d="M50 50 Q60 30 70 50 M50 70 Q60 90 70 70" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+                            <line x1="22" y1="60" x2="40" y2="60" stroke="#d2a679" stroke-width="2" stroke-dasharray="4 4"/>
+                            <line x1="80" y1="60" x2="98" y2="60" stroke="#d2a679" stroke-width="2" stroke-dasharray="4 4"/>
+                            <path d="M22 60 Q30 40 40 50 M22 60 Q30 80 40 70" fill="none" stroke="#d2a679" stroke-width="2"/>
+                            <path d="M98 60 Q90 40 80 50 M98 60 Q90 80 80 70" fill="none" stroke="#d2a679" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Magnetic Field Is Fading</h3>
+                    <p class="text-sm text-stone-600">Earth's field decays ~5%/century. Extrapolated back just <strong>~6,000–10,000 years</strong>, it would have been impossibly strong — a young-Earth signature.</p>
+                </div>
+
+                <!-- TIP 6: Recap card -->
+                <div class="bg-stone-900 text-white p-6 rounded-2xl border border-stone-700 flex flex-col justify-center">
+                    <h3 class="text-xl font-bold mb-2 text-amber-400">Bottom Line</h3>
+                    <p class="text-sm text-stone-300">Helium, C-14, discordant clocks, soft tissue, and the magnetic field all converge on the same number: an Earth that is <strong class="text-amber-400">roughly 6,000 years old — or less.</strong></p>
+                    <p class="text-xs text-stone-400 mt-4">Each graphic above links to a full section in this page.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-6">
+
+        <!-- SECTION 1: PHYSICAL EVIDENCE (ZIRCON HELIUM) -->
+        <section id="physical" class="py-20 border-t border-stone-200">
+            <div class="grid lg:grid-cols-2 gap-16 items-start">
+                <div>
+                    <span class="text-amber-700 font-bold uppercase tracking-widest text-sm">Pillar I: Physical Anomalies</span>
+                    <h2 class="text-4xl font-bold mt-4 mb-6">The Zircon Helium "Leaky Clock"</h2>
+                    <p class="text-stone-600 mb-6 leading-relaxed">
+                        Zircon crystals from the Fenton Hill (NM) borehole contain helium produced by radioactive decay. Because helium is a small, noble gas, it leaks out of crystals rapidly. If the Earth were billions of years old, there should be <strong>zero helium</strong> left in these crystals.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="p-6 data-stat rounded-xl border border-stone-200">
+                            <h4 class="font-bold text-stone-800">The 58% Paradox</h4>
+                            <p class="text-sm text-stone-600">Samples at 197°C retain 58% of their helium. Based on the measured diffusion rate, this retention is physically impossible if the crystals are 1.5 billion years old. It is, however, perfectly consistent with a 6,000-year history.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white p-4 rounded-lg border border-stone-200 text-center">
+                                <span class="block text-3xl font-bold text-amber-700">100,000x</span>
+                                <span class="text-[10px] uppercase font-bold text-stone-400">Error in Deep-Time Prediction</span>
+                            </div>
+                            <div class="bg-stone-900 p-4 rounded-lg text-white text-center">
+                                <span class="block text-3xl font-bold">~6,000y</span>
+                                <span class="text-[10px] uppercase font-bold text-stone-400">Calculated Diffusion Age</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="zirconChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: GEODYNAMICS & THE FLOOD -->
+        <section id="geodynamics" class="py-20 bg-stone-100 -mx-6 px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="text-amber-700 font-bold uppercase tracking-widest text-sm">Pillar II: Global Cataclysm</span>
+                    <h2 class="text-4xl font-bold mt-4">Catastrophic Plate Tectonics (CPT)</h2>
+                    <p class="text-stone-600 mt-4 italic">Mechanisms for rapid continental reorganization and sediment deposition.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center font-bold mb-6">01</div>
+                        <h3 class="text-xl font-bold mb-4">Runaway Subduction</h3>
+                        <p class="text-sm text-stone-600 leading-relaxed">Baumgardner (2003) demonstrated that mantle rocks undergo "thermal runaway" when stress reaches a critical point, dropping viscosity by a factor of 1,000,000,000, allowing plates to move at meters-per-second.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center font-bold mb-6">02</div>
+                        <h3 class="text-xl font-bold mb-4">Continental Megasequences</h3>
+                        <p class="text-sm text-stone-600 leading-relaxed">Massive sediment layers like the <strong>Sauk Megasequence</strong> cover entire continents. These cannot be river deposits; they represent high-energy water pulses that moved thousands of miles in days.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center font-bold mb-6">03</div>
+                        <h3 class="text-xl font-bold mb-4">Oceanic Cooling Sinks</h3>
+                        <p class="text-sm text-stone-600 leading-relaxed">The "Heat Problem" is addressed by the rapid formation of new sea floor, which acted as a massive heat sink during the flood, combined with supersonic steam jets venting heat into space.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: BIOLOGICAL & GENOMIC EVIDENCE (TANDEM REPEATS & GENETIC ENTROPY) -->
+        <section id="genomics" class="py-20 border-t border-stone-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <span class="text-amber-700 font-bold uppercase tracking-widest text-sm">Pillar III: Genomic Architecture</span>
+                    <h2 class="text-4xl font-bold mt-4 mb-6">Tandem Repeats & Genetic Entropy</h2>
+                    <p class="text-stone-600 leading-relaxed">
+                        Rather than evolutionary "junk DNA" accumulated over millions of years, non-coding regions like tandem repeats demonstrate intricate, multi-layered functionality. Combined with the relentless rate of genetic decay, genome data points toward a young origin and engineered design.
+                    </p>
+                </div>
+
+                <!-- Video Feature & Key Takeaways Grid -->
+                <div class="grid lg:grid-cols-3 gap-8 mb-16">
+                    <!-- Video Summary Card -->
+                    <div class="bg-stone-900 text-white p-8 rounded-3xl flex flex-col justify-between">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-amber-600 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Featured Lecture</span>
+                            <h3 class="text-2xl font-bold mb-3 text-amber-400">Dr. Jeff Tomkins: Scientists Ignored This DNA Pattern for DECADES!</h3>
+                            <p class="text-xs text-stone-400 mb-6 italic">Institute for Creation Research (ICR)</p>
+                            <p class="text-sm text-stone-300 leading-relaxed mb-6">
+                                Dr. Tomkins details how tandem repeats—once dismissed as useless junk—function as functional gene expression controllers, structural anchors, and pre-engineered adaptive switches.
+                            </p>
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=zOrvPva4r54&t=1503s" target="_blank" class="w-full text-center py-3 px-4 bg-amber-700 text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-amber-600 transition flex items-center justify-center gap-2">
+                            <span>Watch Lecture on YouTube</span> ➔
+                        </a>
+                    </div>
+
+                    <!-- Core Biological Functions -->
+                    <div class="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm space-y-6">
+                        <h3 class="text-xl font-bold border-b border-stone-100 pb-3 text-stone-900">Functional Roles of Tandem Repeats</h3>
+                        
+                        <div class="space-y-4 text-sm text-stone-600">
+                            <div>
+                                <h4 class="font-bold text-amber-800">1. Regulatory Tuning Knobs (0:18:46)</h4>
+                                <p class="text-xs mt-1">Repeats located in promoter regions act as binding sites for transcription factors, modulating gene expression and permitting rapid adaptation to environmental changes without harmful random mutations.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-800">2. Structural Integrity (0:22:20)</h4>
+                                <p class="text-xs mt-1">Repeats at telomeres (chromosome ends) and centromeres (centers) maintain physical stability during cellular division, preventing chromosome destruction.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-800">3. Developmental Precision (0:29:28)</h4>
+                                <p class="text-xs mt-1">Maintenance of exact repeat counts is tightly regulated during embryonic development; failure leads to unstable expansion linked to ~20 severe neurological and hereditary diseases.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evolutionary & Genetic Entropy Critique -->
+                    <div class="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm space-y-6">
+                        <h3 class="text-xl font-bold border-b border-stone-100 pb-3 text-stone-900">The Decay of the Evolutionary Model</h3>
+                        
+                        <div class="space-y-4 text-sm text-stone-600">
+                            <div>
+                                <h4 class="font-bold text-red-700">Collapse of "Junk DNA" Premises</h4>
+                                <p class="text-xs mt-1">The premise that genomes consist of evolutionary debris is contradicted as high-throughput sequencing uncovers regulatory roles in micro- and minisatellites.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-red-700">Genetic Entropy (46:44)</h4>
+                                <p class="text-xs mt-1">Continuous, accumulating mutation load degrades genomes over generations. Rather than gaining information over millions of years, genomes are undergoing gradual corruption.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-red-700">Chromosome 2 Fusion Challenge</h4>
+                                <p class="text-xs mt-1">Detailed sequence analysis reveals that alleged fusion sites lack expected pristine telomeric repeats and instead represent functional, bidirectional promoter elements.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THE FLAWS OF DATING -->
+        <section id="decay" class="py-20 border-t border-stone-200">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-amber-700 font-bold uppercase tracking-widest text-sm">Pillar IV: The Chronometric Critique</span>
+                <h2 class="text-4xl font-bold mt-4 mb-6">Why Radiometric Dating Fails</h2>
+                <p class="text-stone-600">The "millions of years" conclusion relies on the **Invariance Assumption**—the idea that environment has no effect on decay. However, isotope systems are frequently <strong>discordant</strong> (giving different answers for the same rock).</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="bg-stone-900 text-white p-8 rounded-3xl">
+                    <h3 class="text-2xl font-bold mb-6 text-amber-400">Interactive: The Accelerated Decay Pulse</h3>
+                    <p class="text-stone-400 text-sm mb-8">During the environmental "churning" of the flood, radioactive decay rates likely spiked. Toggle to see how a "pulse" creates the illusion of deep-time.</p>
+                    
+                    <div class="chart-wrapper !bg-stone-800 !border-stone-700 mb-6">
+                        <canvas id="decayPulseChart"></canvas>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button onclick="updateDecay('standard')" class="flex-1 py-3 px-4 bg-stone-700 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-stone-600 transition">Standard Decay</button>
+                        <button onclick="updateDecay('pulse')" class="flex-1 py-3 px-4 bg-amber-600 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-amber-500 transition">Catastrophic Pulse</button>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold">Isotopic Discordance (Evidence)</h3>
+                    <p class="text-sm text-stone-500">The RATE project tested 10 different Grand Canyon rock samples. In almost every case, different isotopic "clocks" yielded wildly different ages for the exact same rock.</p>
+                    
+                    <div class="overflow-hidden border border-stone-200 rounded-xl bg-white">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-stone-50 text-stone-500 uppercase text-[10px] font-bold">
+                                <tr>
+                                    <th class="px-6 py-4">Rock Unit</th>
+                                    <th class="px-6 py-4">Method A</th>
+                                    <th class="px-6 py-4">Method B</th>
+                                    <th class="px-6 py-4">Discrepancy</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100">
+                                <tr>
+                                    <td class="px-6 py-4 font-bold">Cardenas Basalt</td>
+                                    <td class="px-6 py-4">1,111 My (Rb-Sr)</td>
+                                    <td class="px-6 py-4">516 My (K-Ar)</td>
+                                    <td class="px-6 py-4 text-red-600">595 Million Years</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold">Brahma Schist</td>
+                                    <td class="px-6 py-4">1,721 My (Pb-Pb)</td>
+                                    <td class="px-6 py-4">1,240 My (Sm-Nd)</td>
+                                    <td class="px-6 py-4 text-red-600">481 Million Years</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold">Bass Rapids Diabase</td>
+                                    <td class="px-6 py-4">1,375 My (Sm-Nd)</td>
+                                    <td class="px-6 py-4">841 My (K-Ar)</td>
+                                    <td class="px-6 py-4 text-red-600">534 Million Years</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs italic text-stone-500">If dating were "proven fact," these methods should converge on the same number. They do not.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CARBON-14 DYNAMICS -->
+        <section id="carbon" class="py-20 border-t border-stone-200">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12">The Carbon Reservoir Illusion</h2>
+                
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <p class="text-stone-600 mb-6">
+                            Modern Carbon dating assumes the ratio of C-14 to C-12 has always been the same. But the flood drastically changed two variables:
+                        </p>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start gap-3">
+                                <span class="text-amber-700 font-bold">01.</span>
+                                <span class="text-sm text-stone-600"><strong>Biosphere Dilution:</strong> A massive pre-flood vegetation pool (now coal/oil) would dilute the C-14 ratio, making ancient samples look 10x older.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-amber-700 font-bold">02.</span>
+                                <span class="text-sm text-stone-600"><strong>Magnetic Field:</strong> A stronger pre-flood magnetic field would shield the atmosphere from C-14 production.</span>
+                            </li>
+                        </ul>
+                        <div class="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-600">
+                            <h4 class="font-bold text-amber-900">The Diamond Test</h4>
+                            <p class="text-xs text-amber-800 mt-2">C-14 has a half-life of 5,730 years. It should be undetectable after 100,000 years. Yet, <strong>C-14 is consistently found in diamonds</strong> that are claimed to be 1-3 billion years old.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-stone-100">
+                        <label class="block text-sm font-bold text-stone-800 mb-4">Simulate Pre-Flood Carbon Reservoir (C-12 Pool)</label>
+                        <input type="range" id="carbonSlider" min="1" max="100" value="1" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-amber-700">
+                        <div class="flex justify-between text-[10px] font-bold text-stone-400 mt-2 uppercase tracking-widest">
+                            <span>Modern (1x)</span>
+                            <span>Massive (100x)</span>
+                        </div>
+                        
+                        <div class="mt-12 text-center">
+                            <span class="text-xs font-bold text-stone-400 uppercase">Apparent Radiocarbon Age of a 6,000y Sample</span>
+                            <div id="apparentAgeDisplay" class="text-6xl font-bold text-stone-800 my-4">6,000 <span class="text-lg">yr</span></div>
+                            <p id="poolStatus" class="text-xs text-amber-700 font-bold">Modern Atmospheric Equilibrium</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: REFERENCE LIBRARY -->
+        <section id="references" class="py-20 border-t border-stone-200">
+            <h2 class="text-3xl font-bold mb-12">Comprehensive Research Library</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">1. Humphreys, D. R. et al. (2005)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Helium Diffusion Age of Zircons: RATE Project Findings.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">This foundational paper establishes the laboratory measurements for helium diffusion in zircon crystals from New Mexico. It concludes that the physical leak rate matches a 6,000-year history, not 1.5 billion.</p>
+                    <a href="https://www.icr.org/article/helium-diffusion-age-of-zircons/" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">2. Baumgardner, J. R. (2003)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Catastrophic Plate Tectonics: A Geophysical Model of the Flood.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Presents the 3D supercomputer simulation (TERRA) showing that mantle runaway is a physically viable mechanism for rapid global reorganization.</p>
+                    <a href="https://answersingenesis.org/geology/plate-tectonics/catastrophic-plate-tectonics-geophysical-context-of-flood/" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">3. Snelling, A. A. (2005)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Radiohalos in Granites: Evidence for Accelerated Decay.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Analyzes microscopic burn marks (halos) in crystals caused by polonium decay, arguing that the halos could only form if decay rates were significantly faster in the past.</p>
+                    <a href="https://www.icr.org/article/radiohalos-granites-evidence-for-decay/" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">4. Vardiman, L. et al. (2005)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Radioisotopes and the Age of the Earth (RATE) Vol II.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">The summary report of 8 years of isotopic research, documenting systematic discordance and physical flaws in standard radio-dating assumptions.</p>
+                    <a href="https://www.icr.org/rate2/" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">5. Baumgardner, J. R. (2005)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">14C Evidence for a Recent Global Flood and a Young Earth.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Systematic AMS testing detecting intrinsic radiocarbon (C-14) in deep coal beds and ancient natural diamonds, contradicting billion-year age claims.</p>
+                    <a href="https://www.icr.org/article/14c-evidence-for-recent-global-flood/" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">6. Humphreys, D. R. (1986)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Reversals of the Earth's Magnetic Field During the Genesis Flood.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Mathematical model for rapid geomagnetic field decay and reversals recorded in lava flows, supporting a dynamic dipole decaying on a young Earth timeline.</p>
+                    <a href="https://www.icr.org/article/reversals-earths-magnetic-field-during-flood/" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">7. Snelling, A. A. (2010)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Radiometric Dating in Conflict: Discordant Isotope Ages of Grand Canyon Rocks.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Empirical examination demonstrating significant discordance between K-Ar, Rb-Sr, Sm-Nd, and Pb-Pb age determinations on identical rock units throughout the Grand Canyon sequence.</p>
+                    <a href="https://answersingenesis.org/geology/radiometric-dating/radiometric-dating-in-conflict/" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">8. Austin, S. A. (1996)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Excess Argon within Mineral Concentrates from the Dacite Lava Dome at Mount St. Helens.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Demonstrates that newly formed 10-year-old volcanic rock yields potassium-argon "ages" between 350,000 and 2.8 million years due to inherited excess argon.</p>
+                    <a href="https://creation.com/excess-argon-lava-dome" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">9. Schweitzer, M. H. et al. (2005)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Soft-Tissue Vessels and Cellular Preservation in Tyrannosaurus rex.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Published research in Science documenting flexible blood vessels, bone cells, and organic matrix in fossilized dinosaur bone, challenging multi-million-year preservation limits.</p>
+                    <a href="https://www.science.org/doi/10.1126/science.1108300" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">10. Clarey, T. L. (2019)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Data Confirm Megasequences Are Global.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Synthesis of thousands of geological borehole logs confirming that continent-spanning sedimentary megasequences represent transgressive global flood deposits.</p>
+                    <a href="https://www.icr.org/article/data-confirm-megasequences-are-global" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+                <div class="ref-card p-6 bg-stone-50 rounded-xl">
+                    <h4 class="font-bold text-stone-900">11. Tomkins, J. (2026)</h4>
+                    <p class="text-sm text-stone-600 my-2 italic">Scientists Ignored This DNA Pattern for DECADES! Tandem Repeats & Functional Genomics.</p>
+                    <p class="text-xs text-stone-500 mb-4 leading-relaxed">Presents genomic evidence that tandem repeats (micro/minisatellites) act as essential tuning knobs for gene regulation, chromosome structure, and embryonic development, dismantling the "junk DNA" evolutionary paradigm and detailing genetic entropy.</p>
+                    <a href="https://www.youtube.com/watch?v=zOrvPva4r54&t=1503s" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">VIEW RESEARCH SOURCE ➜</a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-900 text-stone-400 py-16 px-6 mt-20">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-center md:text-left">
+                <p class="text-white font-bold text-lg mb-2 italic">By Nathaniel Mina, mechanical engineering @RIT</p>
+                <p class="text-xs max-w-sm">This application synthesizes geological research regarding short-timescale models and environmental chronometric sensitivity.</p>
+            </div>
+            <div class="flex gap-6 text-xs font-bold uppercase tracking-widest">
+                <a href="#" class="hover:text-white transition">Data Summary</a>
+                <a href="#" class="hover:text-white transition">Full Bibliography</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Default Chart Config
+        Chart.defaults.color = '#a8a29e';
+        Chart.defaults.borderColor = '#3f3a35';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        // 1. Zircon Helium Comparison Chart
+        const zirconCtx = document.getElementById('zirconChart').getContext('2d');
+        new Chart(zirconCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Creation Model (6,000y)', 'Observed (Fenton Hill Sample)', 'Uniformitarian (1.5By)'],
+                datasets: [{
+                    label: 'Helium Retention %',
+                    data: [56.8, 58.0, 0.0001],
+                    backgroundColor: ['#d97706', '#a67c52', '#d1d5db'],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Retention: ${ctx.raw}%`
+                        }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        max: 70,
+                        title: { display: true, text: 'Retention Percentage (%)', font: { weight: 'bold' } }
+                    }
+                }
+            }
+        });
+
+        // 2. Accelerated Decay Pulse Chart
+        const pulseCtx = document.getElementById('decayPulseChart').getContext('2d');
+        let pulseChart = new Chart(pulseCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 60}, (_, i) => i),
+                datasets: [{
+                    label: 'Remaining Parent Isotope',
+                    data: Array.from({length: 60}, (_, i) => 100 - (i * 0.5)),
+                    borderColor: '#f59e0b',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: true,
+                    backgroundColor: 'rgba(245, 158, 11, 0.05)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { 
+                        beginAtZero: true, 
+                        max: 105,
+                        title: { display: true, text: 'Isotope %', color: '#a8a29e' } 
+                    }
+                }
+            }
+        });
+
+        function updateDecay(type) {
+            if (type === 'standard') {
+                pulseChart.data.datasets[0].data = Array.from({length: 60}, (_, i) => 100 - (i * 0.5));
+                pulseChart.data.datasets[0].borderColor = '#444';
+            } else {
+                let data = [];
+                for(let i=0; i<60; i++) {
+                    if (i < 25) data.push(100 - (i * 0.1));
+                    else if (i < 35) data.push(97.5 - ((i-25) * 8.5)); // Catastrophic Fall
+                    else data.push(Math.max(2, 12.5 - ((i-35) * 0.2)));
+                }
+                pulseChart.data.datasets[0].data = data;
+                pulseChart.data.datasets[0].borderColor = '#f59e0b';
+            }
+            pulseChart.update();
+        }
+
+        // 3. Carbon Age Calculator Logic
+        const slider = document.getElementById('carbonSlider');
+        const ageDisplay = document.getElementById('apparentAgeDisplay');
+        const statusDisplay = document.getElementById('poolStatus');
+
+        slider.addEventListener('input', (e) => {
+            const mult = e.target.value;
+            // Simplified age calculation based on C12:C14 dilution ratio
+            // True Age = 6,000y. Dilution makes it look older.
+            // Ratio = 1 / Mult. Age = -5730 * ln(Ratio) / ln(2) + TrueAge
+            const ratio = 1 / mult;
+            const extraAge = -(5730 / Math.log(2)) * Math.log(ratio);
+            const totalApparentAge = Math.round(6000 + extraAge);
+            
+            ageDisplay.innerHTML = `${totalApparentAge.toLocaleString()} <span class="text-lg">yr</span>`;
+            
+            if (mult == 1) statusDisplay.innerText = "Modern Atmospheric Equilibrium";
+            else if (mult < 50) statusDisplay.innerText = "Post-Flood Environmental Skew";
+            else statusDisplay.innerText = "Pre-Flood 'High-C12' Reservoir Simulation";
+            statusDisplay.style.color = mult > 1 ? '#d97706' : '#78716c';
+        });
+
+    </script>
+</body>
+{% endraw %}
+</html>
