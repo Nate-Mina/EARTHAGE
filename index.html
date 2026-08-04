@@ -14,17 +14,17 @@ layout: none
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600;700&display=swap');
         
         :root {
-            /* Dark-mode palette */
-            --earth-900: #f5f5f4;
-            --earth-800: #d6d3d1;
-            --clay: #d2a679;
-            --sand: #0c0a09;            /* page background (near-black) */
-            --surface: #1c1917;        /* card / raised surface */
-            --surface-2: #292524;      /* alt surface */
-            --border: #3f3a35;         /* hairline borders */
-            --muted: #a8a29e;          /* secondary text */
-            --amber-accent: #f59e0b;
-            --amber-soft: #fbbf24;
+            /* Light-mode palette */
+            --earth-900: #1c1917;      /* primary text (near-black) */
+            --earth-800: #44403c;      /* secondary heading */
+            --clay: #b45309;           /* clay/brown accent (amber-700) */
+            --sand: #fafaf9;           /* page background (warm paper) */
+            --surface: #ffffff;        /* card / raised surface */
+            --surface-2: #f5f5f4;      /* alt surface (stone-100) */
+            --border: #e7e5e4;         /* hairline borders (stone-200) */
+            --muted: #78716c;          /* secondary text (stone-500) */
+            --amber-accent: #d97706;   /* amber-600 */
+            --amber-soft: #b45309;     /* amber-700 (reads on light) */
         }
 
         html { background-color: var(--sand); }
@@ -48,7 +48,7 @@ layout: none
             padding: 20px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
         }
 
         .ref-card {
@@ -62,39 +62,20 @@ layout: none
         }
 
         .data-stat {
-            background: linear-gradient(135deg, #292524 0%, #3f3a35 100%);
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
         }
 
         /* Smooth dark scrollbars */
         ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: #0c0a09; }
-        ::-webkit-scrollbar-thumb { background: #3f3a35; border-radius: 999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #57534e; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
 
-        ::selection { background: #f59e0b; color: #0c0a09; }
+        ::selection { background: #d97706; color: #ffffff; }
 
-        /* ===== DARK MODE OVERRIDES =====
-           The markup uses Tailwind's "light" utility names (white / stone-50..900).
-           These rules remap them to a true dark palette. stone-900 is kept dark
-           on purpose — it drives the intentional dark accent panels. */
-        .bg-white, .bg-white\/90 { background-color: var(--surface) !important; }
-        .bg-stone-50  { background-color: var(--surface) !important; }
-        .bg-stone-100 { background-color: var(--surface-2) !important; }
-        .bg-amber-50  { background-color: #2a1a0a !important; }
-
-        .border-stone-200,
-        .border-stone-100,
-        .border-stone-50,
-        .divide-stone-100 > *,
-        .divide-y > * { border-color: var(--border) !important; }
-
-        .text-stone-300, .text-stone-400,
-        .text-stone-500, .text-stone-600 { color: var(--muted) !important; }
-        .text-stone-800, .text-stone-900 { color: var(--earth-900) !important; }
-
-        /* Amber/red accent text must stay light so it reads on dark cards */
-        .text-amber-700, .text-amber-800, .text-amber-900 { color: var(--amber-soft) !important; }
-        .text-red-600, .text-red-700 { color: #f87171 !important; }
+        /* Light theme: Tailwind's native light utilities (white / stone-50..900)
+           render as-is. The intentional dark accent panels (bg-stone-900) are kept
+           for contrast against the light page. */
     </style>
 </head>
 <body class="selection:bg-amber-500">
@@ -576,8 +557,8 @@ layout: none
 
     <script>
         // Default Chart Config
-        Chart.defaults.color = '#a8a29e';
-        Chart.defaults.borderColor = '#3f3a35';
+        Chart.defaults.color = '#57534e';
+        Chart.defaults.borderColor = '#e7e5e4';
         Chart.defaults.font.family = "'Inter', sans-serif";
 
         // 1. Zircon Helium Comparison Chart
@@ -641,7 +622,7 @@ layout: none
                     y: { 
                         beginAtZero: true, 
                         max: 105,
-                        title: { display: true, text: 'Isotope %', color: '#a8a29e' } 
+                        title: { display: true, text: 'Isotope %', color: '#78716c' } 
                     }
                 }
             }

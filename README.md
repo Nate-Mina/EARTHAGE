@@ -55,7 +55,8 @@ each backed by cited research.
 
 ### Design
 
-- Fully **dark-mode** (near-black `#0c0a09` background, amber accents).
+- **Light-mode** (warm paper `#fafaf9` background, amber accents, with
+  intentional dark accent panels for contrast).
 - All five tip graphics are **inline SVG** — no image files to host.
 - Tailwind + Chart.js loaded from CDNs; the page carries its own styling and
   uses `layout: none`, so no Jekyll theme is needed.
