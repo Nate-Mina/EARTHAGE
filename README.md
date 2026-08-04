@@ -1,45 +1,79 @@
 # Earth Age — Dark-Mode Geochronology Explorer
 
-A single-page, **dark-mode** data explorer presenting physical, genomic, and
-chronometric arguments for an Earth roughly **6,000 years old (or less)**.
+**Empirical Evidence for a Short-Timescale Earth** — a dark-mode, single-page
+data explorer that lays out why physical, genomic, and chronometric
+measurements fit a planet only **~6,000 years old (or less)**.
 
-The page is a self-contained Tailwind + Chart.js HTML file. It deploys to
-**GitHub Pages** via a **GitHub Actions** workflow (no Jekyll theme required —
-the page carries its own dark styling and uses `layout: none`).
+🔗 **Live site:** https://nate-mina.github.io/EARTHAGE/
 
-## What's in here
+---
 
-| File | Purpose |
-|------|---------|
-| `index.html` | The page itself (dark mode + graphic "tips" infocards). Wrapped in `{% raw %}` so Jekyll passes the markup through untouched. Footer links to the [GitHub README](https://github.com/Nate-Mina/EARTHAGE#readme). |
-| `_config.yml` | Jekyll / GitHub Pages config — metadata + `jekyll-feed` plugin. No `theme:` key (the page is self-styled). |
-| `Gemfile` | Bare `jekyll` dependency for local builds and the Actions build. |
-| `.github/workflows/jekyll.yml` | GitHub Actions workflow that builds with Jekyll and deploys to GitHub Pages. |
-| `README.md` | This file. |
+## What the site argues
 
-## Deploy to GitHub Pages (GitHub Actions)
+The page is built around one claim: current "deep time" dating assumptions
+break down under physical measurement, and the same numbers keep landing on a
+young age. It's organized as five quick-read graphics plus deeper sections,
+each backed by cited research.
 
-This repo deploys automatically on every push to `main` using the
-`Deploy Jekyll site to Pages` workflow in `.github/workflows/jekyll.yml`.
+### The five "quick tips" (shareable graphics)
 
-1. Push to the `main` branch — the workflow builds the site with Jekyll and
-   deploys it to GitHub Pages.
-2. On GitHub, ensure **Settings → Pages → Build and deployment → Source:
-   GitHub Actions**. (This is already set on the `Nate-Mina/EARTHAGE` repo.)
-3. After the Actions run finishes (≈1 min), visit
-   `https://Nate-Mina.github.io/EARTHAGE/`.
+1. **Zircon Helium Won't Stay** — Helium leaks out of the Fenton Hill zircons
+   fast. If Earth were 1.5 billion years old, **0% should remain** — yet
+   **58%** is still there. That only fits a ~6,000-year clock.
+2. **C-14 in "Ancient" Diamonds** — Carbon-14 decays away in ~100,000 years,
+   yet it shows up **inside diamonds** claimed to be 1–3 billion years old.
+3. **Dating Clocks Disagree** — Same Grand Canyon rock, four methods, ages off
+   by **hundreds of millions of years**. Settled dating would make them match.
+4. **Soft Tissue in Dino Bone** — *Science* (2005) found flexible blood
+   vessels in *T. rex* bone. Organic matter can't survive 65+ million years,
+   but fits thousands.
+5. **Magnetic Field Is Fading** — Earth's field decays ~5%/century. Go back
+   only ~6,000–10,000 years and it would have been impossibly strong — a
+   young-Earth signature.
 
-To watch a run:
+> **Bottom line (from the page):** helium, C-14, discordant clocks, soft
+> tissue, and the magnetic field all converge on the same number — an Earth
+> roughly **6,000 years old, or less.**
 
-```bash
-gh run list --repo Nate-Mina/EARTHAGE
-gh run watch <run-id> --repo Nate-Mina/EARTHAGE
-```
+### The deeper sections
 
-To deploy a fresh copy to your own account: fork/clone, push to your `main`,
-and set the same **Pages → Source: GitHub Actions** setting on your repo.
+- **Physical Anomalies — The Zircon Helium "Leaky Clock"** — the 58% paradox
+  and a diffusion age of ~6,000 years (vs. a 100,000× error in the
+  deep-time prediction), shown in an interactive chart.
+- **Catastrophic Plate Tectonics (CPT)** — runaway subduction, continental
+  megasequences, and oceanic heat sinks as mechanisms for rapid, global
+  deposition.
+- **Tandem Repeats & Genetic Entropy** — non-coding "junk DNA" that actually
+  functions as regulatory tuning knobs, structural anchors, and adaptive
+  switches, pointing to engineered design and genetic decay.
+- **The Carbon Reservoir Illusion** — how a pre-flood biosphere and stronger
+  magnetic field dilute the C-14 ratio, making a 6,000-year sample *look*
+  far older (with a live slider simulation).
+- **Comprehensive Research Library** — 11 cited sources (RATE project,
+  Baumgardner, Snelling, Vardiman, Humphreys, Austin, Schweitzer, Clarey,
+  Tomkins, and more).
 
-## Build locally (optional)
+### Design
+
+- Fully **dark-mode** (near-black `#0c0a09` background, amber accents).
+- All five tip graphics are **inline SVG** — no image files to host.
+- Tailwind + Chart.js loaded from CDNs; the page carries its own styling and
+  uses `layout: none`, so no Jekyll theme is needed.
+
+---
+
+## Install / build options
+
+The site is a single static `index.html`. You don't need to build anything to
+view it — just open the file or visit the live URL above. The options below
+are only if you want to host or modify it yourself.
+
+### Option A — Just view it (no install)
+
+Open `index.html` in any browser, or visit the live GitHub Pages site:
+https://nate-mina.github.io/EARTHAGE/
+
+### Option B — Run locally with Jekyll
 
 ```bash
 bundle install
@@ -47,11 +81,30 @@ bundle exec jekyll serve
 # open http://localhost:4000
 ```
 
-## Notes
+### Option C — Deploy your own GitHub Pages (GitHub Actions)
 
-- The page loads Tailwind and Chart.js from CDNs, so it needs internet access
-  when viewed.
-- All five "tip" graphics are inline SVG — no image files to host.
-- Content authored by Nathaniel Mina; presented as a research synthesis.
+1. Fork/clone this repo and push to your `main` branch.
+2. In your repo: **Settings → Pages → Build and deployment → Source:
+   GitHub Actions**.
+3. The `Deploy Jekyll site to Pages` workflow in
+   `.github/workflows/jekyll.yml` builds and deploys automatically on push
+   (~1 min). Watch it with:
+   ```bash
+   gh run list --repo <you>/<repo>
+   gh run watch <run-id> --repo <you>/<repo>
+   ```
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `index.html` | The page itself (dark mode + tip graphics). Wrapped in `{% raw %}` so Jekyll passes the markup through untouched. |
+| `_config.yml` | Jekyll/GitHub Pages config — metadata + `jekyll-feed`. No `theme:` (self-styled). |
+| `Gemfile` | Bare `jekyll` dependency for local + Actions builds. |
+| `.github/workflows/jekyll.yml` | GitHub Actions build & deploy workflow. |
+| `README.md` | This file. |
+
+Content authored by **Nathaniel Mina** (mechanical engineering, RIT);
+presented as a research synthesis.
 
 MIT No Attribution — reuse freely.
