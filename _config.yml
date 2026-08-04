@@ -1,0 +1,22 @@
+# ---------------------------------------------------------------------------
+# Earth Age — GitHub Pages / Jekyll configuration
+# This site is a single static page (index.html). It uses the `jekyll-theme-cayman`
+# Jekyll theme, which GitHub Pages applies automatically when it builds the site.
+# ---------------------------------------------------------------------------
+
+title: "Short-Timescale Geochronology"
+description: >-
+  A dark-mode data explorer presenting physical, genomic, and chronometric
+  evidence for an Earth roughly 6,000 years old (or less).
+author: "Nathaniel Mina"
+
+# GitHub Pages applies the chosen theme automatically at build time.
+# Cayman = clean single-column dark-friendly theme. Swap the line below for
+# another gem-based theme if you prefer (see README.md for options).
+theme: jekyll-theme-cayman
+
+# Don't let Jekyll mangle our JavaScript / chart assets.
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

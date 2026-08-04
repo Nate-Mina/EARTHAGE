@@ -1,3 +1,7 @@
+---
+layout: none
+---
+{% raw %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +14,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600;700&display=swap');
         
         :root {
-            --earth-900: #2d2a26;
-            --earth-800: #45403c;
-            --clay: #a67c52;
-            --sand: #f4f1ea;
-            --amber-accent: #d97706;
+            /* Dark-mode palette */
+            --earth-900: #f5f5f4;
+            --earth-800: #d6d3d1;
+            --clay: #d2a679;
+            --sand: #0c0a09;            /* page background (near-black) */
+            --surface: #1c1917;        /* card / raised surface */
+            --surface-2: #292524;      /* alt surface */
+            --border: #3f3a35;         /* hairline borders */
+            --muted: #a8a29e;          /* secondary text */
+            --amber-accent: #f59e0b;
+            --amber-soft: #fbbf24;
         }
+
+        html { background-color: var(--sand); }
 
         body {
             background-color: var(--sand);
@@ -32,11 +44,11 @@
             max-width: 750px;
             margin: 0 auto;
             height: 380px;
-            background: white;
+            background: var(--surface);
             padding: 20px;
             border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
         }
 
         .ref-card {
@@ -45,16 +57,47 @@
         }
         .ref-card:hover {
             border-left-color: var(--amber-accent);
-            background-color: white;
+            background-color: var(--surface-2);
             transform: translateX(5px);
         }
 
         .data-stat {
-            background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+            background: linear-gradient(135deg, #292524 0%, #3f3a35 100%);
         }
+
+        /* Smooth dark scrollbars */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #0c0a09; }
+        ::-webkit-scrollbar-thumb { background: #3f3a35; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #57534e; }
+
+        ::selection { background: #f59e0b; color: #0c0a09; }
+
+        /* ===== DARK MODE OVERRIDES =====
+           The markup uses Tailwind's "light" utility names (white / stone-50..900).
+           These rules remap them to a true dark palette. stone-900 is kept dark
+           on purpose — it drives the intentional dark accent panels. */
+        .bg-white, .bg-white\/90 { background-color: var(--surface) !important; }
+        .bg-stone-50  { background-color: var(--surface) !important; }
+        .bg-stone-100 { background-color: var(--surface-2) !important; }
+        .bg-amber-50  { background-color: #2a1a0a !important; }
+
+        .border-stone-200,
+        .border-stone-100,
+        .border-stone-50,
+        .divide-stone-100 > *,
+        .divide-y > * { border-color: var(--border) !important; }
+
+        .text-stone-300, .text-stone-400,
+        .text-stone-500, .text-stone-600 { color: var(--muted) !important; }
+        .text-stone-800, .text-stone-900 { color: var(--earth-900) !important; }
+
+        /* Amber/red accent text must stay light so it reads on dark cards */
+        .text-amber-700, .text-amber-800, .text-amber-900 { color: var(--amber-soft) !important; }
+        .text-red-600, .text-red-700 { color: #f87171 !important; }
     </style>
 </head>
-<body class="selection:bg-amber-200">
+<body class="selection:bg-amber-500">
 
     <!-- NAVIGATION -->
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200">
@@ -65,6 +108,7 @@
             </div>
             <div class="hidden lg:flex space-x-8 text-xs font-bold uppercase tracking-widest text-stone-600">
                 <a href="#physical" class="hover:text-amber-700 transition">Physical Evidence</a>
+                <a href="#tips" class="hover:text-amber-700 transition">Quick Tips</a>
                 <a href="#geodynamics" class="hover:text-amber-700 transition">Geodynamics</a>
                 <a href="#genomics" class="hover:text-amber-700 transition">Genomics & Repeats</a>
                 <a href="#decay" class="hover:text-amber-700 transition">Dating Flaws</a>
@@ -86,6 +130,106 @@
             </div>
         </div>
     </header>
+
+    <!-- QUICK TIPS: GRAPHIC INFOCARDS (Age of the Earth ≈ 6,000 yrs or less) -->
+    <section id="tips" class="border-t border-stone-200 py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-amber-700 font-bold uppercase tracking-widest text-sm">Quick-Read Graphics</span>
+                <h2 class="text-4xl font-bold mt-4 mb-4">The Earth Is ~6,000 Years Old (or Less)</h2>
+                <p class="text-stone-600 leading-relaxed">Five bite-size visuals you can share. Each points at a physical measurement that fits a young-age timeline and breaks under the "billions of years" assumption.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- TIP 1: Helium -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Crystal with escaping helium atoms">
+                            <rect x="46" y="34" width="28" height="52" rx="4" fill="#3f3a35" stroke="#d2a679" stroke-width="2"/>
+                            <circle cx="60" cy="60" r="4" fill="#f59e0b"/>
+                            <g fill="#fbbf24">
+                                <circle cx="40" cy="44" r="3.5"/><circle cx="82" cy="50" r="3.5"/>
+                                <circle cx="38" cy="74" r="3.5"/><circle cx="84" cy="80" r="3.5"/>
+                            </g>
+                            <path d="M40 44 L34 38 M82 50 L90 44 M38 74 L30 80 M84 80 L92 86" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Zircon Helium Won't Stay</h3>
+                    <p class="text-sm text-stone-600">Helium leaks out of the Fenton Hill zircons fast. If Earth were 1.5 billion years old, <strong>0% should remain</strong> — yet 58% is still there. That only fits a <strong>~6,000-year</strong> clock.</p>
+                </div>
+
+                <!-- TIP 2: Carbon-14 in diamonds -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Diamond containing C-14">
+                            <polygon points="60,28 84,52 60,92 36,52" fill="#292524" stroke="#fbbf24" stroke-width="2"/>
+                            <polygon points="60,28 84,52 60,52 36,52" fill="#3f3a35"/>
+                            <text x="60" y="66" font-size="20" fill="#f59e0b" text-anchor="middle" font-family="monospace" font-weight="bold">C¹⁴</text>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">C-14 in "Ancient" Diamonds</h3>
+                    <p class="text-sm text-stone-600">Carbon-14 dies in ~100,000 yrs. It shows up <strong>inside diamonds</strong> claimed to be 1–3 billion years old — proof they aren't that old.</p>
+                </div>
+
+                <!-- TIP 3: Discordant clocks -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Two clocks disagreeing">
+                            <circle cx="42" cy="60" r="20" fill="none" stroke="#d2a679" stroke-width="2"/>
+                            <line x1="42" y1="60" x2="42" y2="46" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="42" y1="60" x2="54" y2="66" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="84" cy="60" r="20" fill="none" stroke="#d2a679" stroke-width="2"/>
+                            <line x1="84" y1="60" x2="84" y2="48" stroke="#f87171" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="84" y1="60" x2="72" y2="56" stroke="#f87171" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M64 60 L68 56" stroke="#f87171" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Dating Clocks Disagree</h3>
+                    <p class="text-sm text-stone-600">Same Grand Canyon rock, four methods: ages off by <strong>hundreds of millions of years</strong>. If dating were settled fact, the clocks would match.</p>
+                </div>
+
+                <!-- TIP 4: Soft tissue -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Preserved blood vessel">
+                            <rect x="22" y="54" width="76" height="12" rx="6" fill="#3f3a35" stroke="#d2a679" stroke-width="2"/>
+                            <circle cx="38" cy="60" r="3" fill="#f87171"/>
+                            <circle cx="54" cy="60" r="3" fill="#f87171"/>
+                            <circle cx="70" cy="60" r="3" fill="#f87171"/>
+                            <circle cx="86" cy="60" r="3" fill="#f87171"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Soft Tissue in Dino Bone</h3>
+                    <p class="text-sm text-stone-600"><em>Science</em> (2005) found flexible blood vessels in <em>T. rex</em> bone. Organic matter can't survive <strong>65+ million years</strong> — but fits thousands.</p>
+                </div>
+
+                <!-- TIP 5: Magnetic field decay -->
+                <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex items-center justify-center h-28 mb-4">
+                        <svg viewBox="0 0 120 120" class="h-28 w-28" role="img" aria-label="Earth magnetic field decaying">
+                            <circle cx="60" cy="60" r="10" fill="#292524" stroke="#fbbf24" stroke-width="2"/>
+                            <path d="M50 50 Q60 30 70 50 M50 70 Q60 90 70 70" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+                            <line x1="22" y1="60" x2="40" y2="60" stroke="#d2a679" stroke-width="2" stroke-dasharray="4 4"/>
+                            <line x1="80" y1="60" x2="98" y2="60" stroke="#d2a679" stroke-width="2" stroke-dasharray="4 4"/>
+                            <path d="M22 60 Q30 40 40 50 M22 60 Q30 80 40 70" fill="none" stroke="#d2a679" stroke-width="2"/>
+                            <path d="M98 60 Q90 40 80 50 M98 60 Q90 80 80 70" fill="none" stroke="#d2a679" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Magnetic Field Is Fading</h3>
+                    <p class="text-sm text-stone-600">Earth's field decays ~5%/century. Extrapolated back just <strong>~6,000–10,000 years</strong>, it would have been impossibly strong — a young-Earth signature.</p>
+                </div>
+
+                <!-- TIP 6: Recap card -->
+                <div class="bg-stone-900 text-white p-6 rounded-2xl border border-stone-700 flex flex-col justify-center">
+                    <h3 class="text-xl font-bold mb-2 text-amber-400">Bottom Line</h3>
+                    <p class="text-sm text-stone-300">Helium, C-14, discordant clocks, soft tissue, and the magnetic field all converge on the same number: an Earth that is <strong class="text-amber-400">roughly 6,000 years old — or less.</strong></p>
+                    <p class="text-xs text-stone-400 mt-4">Each graphic above links to a full section in this page.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
 
     <main class="max-w-7xl mx-auto px-6">
 
@@ -431,7 +575,8 @@
 
     <script>
         // Default Chart Config
-        Chart.defaults.color = '#78716c';
+        Chart.defaults.color = '#a8a29e';
+        Chart.defaults.borderColor = '#3f3a35';
         Chart.defaults.font.family = "'Inter', sans-serif";
 
         // 1. Zircon Helium Comparison Chart
@@ -542,4 +687,5 @@
 
     </script>
 </body>
+{% endraw %}
 </html>
