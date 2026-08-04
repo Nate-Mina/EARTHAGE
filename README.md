@@ -55,7 +55,7 @@ each backed by cited research.
 
 ### Design
 
-- Fully **dark-mode** (near-black `#0c0a09` background, amber accents).
+- **Dark / light toggle** — defaults to dark mode (near-black `#0c0a09` background, amber accents) with a sun/moon button in the nav that flips to a warm-paper light theme; the choice is remembered in `localStorage`.
 - All five tip graphics are **inline SVG** — no image files to host.
 - Tailwind + Chart.js loaded from CDNs; the page carries its own styling and
   uses `layout: none`, so no Jekyll theme is needed.

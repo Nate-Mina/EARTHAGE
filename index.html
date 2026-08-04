@@ -5,6 +5,15 @@ layout: none
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('theme');
+                if (t !== 'light' && t !== 'dark') t = 'dark';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Short-Timescale Geochronology | Comprehensive Research Explorer</title>
@@ -14,7 +23,7 @@ layout: none
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600;700&display=swap');
         
         :root {
-            /* Dark-mode palette */
+            /* Dark-mode palette (default) */
             --earth-900: #f5f5f4;
             --earth-800: #d6d3d1;
             --clay: #d2a679;
@@ -25,6 +34,23 @@ layout: none
             --muted: #a8a29e;          /* secondary text */
             --amber-accent: #f59e0b;
             --amber-soft: #fbbf24;
+        }
+
+        /* Light-mode palette: same variable names, re-pointed at warm-paper values.
+           Because the markup uses Tailwind's light utility names, the dark overrides
+           below are scoped to data-theme="dark", so in light mode the page simply
+           renders with Tailwind's natural (light) colors. */
+        html[data-theme="light"] {
+            --earth-900: #1c1917;
+            --earth-800: #44403c;
+            --clay: #b45309;
+            --sand: #fafaf9;            /* warm paper page background */
+            --surface: #ffffff;        /* card / raised surface */
+            --surface-2: #f5f5f4;      /* alt surface */
+            --border: #e7e5e4;         /* hairline borders */
+            --muted: #78716c;          /* secondary text */
+            --amber-accent: #d97706;
+            --amber-soft: #b45309;
         }
 
         html { background-color: var(--sand); }
@@ -62,39 +88,47 @@ layout: none
         }
 
         .data-stat {
-            background: linear-gradient(135deg, #292524 0%, #3f3a35 100%);
+            background: linear-gradient(135deg, var(--surface-2) 0%, var(--border) 100%);
         }
 
-        /* Smooth dark scrollbars */
+        /* Smooth scrollbars (themed) */
         ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: #0c0a09; }
-        ::-webkit-scrollbar-thumb { background: #3f3a35; border-radius: 999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #57534e; }
+        ::-webkit-scrollbar-track { background: var(--sand); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
         ::selection { background: #f59e0b; color: #0c0a09; }
 
-        /* ===== DARK MODE OVERRIDES =====
+        /* ===== DARK MODE OVERRIDES (only when data-theme="dark") =====
            The markup uses Tailwind's "light" utility names (white / stone-50..900).
-           These rules remap them to a true dark palette. stone-900 is kept dark
-           on purpose — it drives the intentional dark accent panels. */
-        .bg-white, .bg-white\/90 { background-color: var(--surface) !important; }
-        .bg-stone-50  { background-color: var(--surface) !important; }
-        .bg-stone-100 { background-color: var(--surface-2) !important; }
-        .bg-amber-50  { background-color: #2a1a0a !important; }
+           In light mode these render with their natural Tailwind colors, so the
+           overrides below are scoped to dark only. stone-900 is kept dark on
+           purpose — it drives the intentional dark accent panels. */
+        html[data-theme="dark"] .bg-white,
+        html[data-theme="dark"] .bg-white\/90 { background-color: var(--surface) !important; }
+        html[data-theme="dark"] .bg-stone-50  { background-color: var(--surface) !important; }
+        html[data-theme="dark"] .bg-stone-100 { background-color: var(--surface-2) !important; }
+        html[data-theme="dark"] .bg-amber-50  { background-color: #2a1a0a !important; }
 
-        .border-stone-200,
-        .border-stone-100,
-        .border-stone-50,
-        .divide-stone-100 > *,
-        .divide-y > * { border-color: var(--border) !important; }
+        html[data-theme="dark"] .border-stone-200,
+        html[data-theme="dark"] .border-stone-100,
+        html[data-theme="dark"] .border-stone-50,
+        html[data-theme="dark"] .divide-stone-100 > *,
+        html[data-theme="dark"] .divide-y > * { border-color: var(--border) !important; }
 
-        .text-stone-300, .text-stone-400,
-        .text-stone-500, .text-stone-600 { color: var(--muted) !important; }
-        .text-stone-800, .text-stone-900 { color: var(--earth-900) !important; }
+        html[data-theme="dark"] .text-stone-300,
+        html[data-theme="dark"] .text-stone-400,
+        html[data-theme="dark"] .text-stone-500,
+        html[data-theme="dark"] .text-stone-600 { color: var(--muted) !important; }
+        html[data-theme="dark"] .text-stone-800,
+        html[data-theme="dark"] .text-stone-900 { color: var(--earth-900) !important; }
 
         /* Amber/red accent text must stay light so it reads on dark cards */
-        .text-amber-700, .text-amber-800, .text-amber-900 { color: var(--amber-soft) !important; }
-        .text-red-600, .text-red-700 { color: #f87171 !important; }
+        html[data-theme="dark"] .text-amber-700,
+        html[data-theme="dark"] .text-amber-800,
+        html[data-theme="dark"] .text-amber-900 { color: var(--amber-soft) !important; }
+        html[data-theme="dark"] .text-red-600,
+        html[data-theme="dark"] .text-red-700 { color: #f87171 !important; }
     </style>
 </head>
 <body class="selection:bg-amber-500">
@@ -106,13 +140,19 @@ layout: none
                 <div class="w-8 h-8 bg-amber-700 rounded-full flex items-center justify-center text-white font-bold">G</div>
                 <span class="text-xl font-bold tracking-tight">Geochronology<span class="text-amber-700">Research</span></span>
             </div>
-            <div class="hidden lg:flex space-x-8 text-xs font-bold uppercase tracking-widest text-stone-600">
-                <a href="#physical" class="hover:text-amber-700 transition">Physical Evidence</a>
-                <a href="#tips" class="hover:text-amber-700 transition">Quick Tips</a>
-                <a href="#geodynamics" class="hover:text-amber-700 transition">Geodynamics</a>
-                <a href="#genomics" class="hover:text-amber-700 transition">Genomics & Repeats</a>
-                <a href="#decay" class="hover:text-amber-700 transition">Dating Flaws</a>
-                <a href="#references" class="px-4 py-2 bg-stone-900 text-white rounded-full hover:bg-amber-700 transition">References</a>
+            <div class="flex items-center space-x-4">
+                <button id="themeToggle" type="button" aria-label="Switch to light mode"
+                        class="h-10 w-10 flex items-center justify-center rounded-full border border-stone-200 text-stone-800 hover:bg-stone-100 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+                <div class="hidden lg:flex space-x-8 text-xs font-bold uppercase tracking-widest text-stone-600">
+                    <a href="#physical" class="hover:text-amber-700 transition">Physical Evidence</a>
+                    <a href="#tips" class="hover:text-amber-700 transition">Quick Tips</a>
+                    <a href="#geodynamics" class="hover:text-amber-700 transition">Geodynamics</a>
+                    <a href="#genomics" class="hover:text-amber-700 transition">Genomics & Repeats</a>
+                    <a href="#decay" class="hover:text-amber-700 transition">Dating Flaws</a>
+                    <a href="#references" class="px-4 py-2 bg-stone-900 text-white rounded-full hover:bg-amber-700 transition">References</a>
+                </div>
             </div>
         </div>
     </nav>
@@ -582,7 +622,7 @@ layout: none
 
         // 1. Zircon Helium Comparison Chart
         const zirconCtx = document.getElementById('zirconChart').getContext('2d');
-        new Chart(zirconCtx, {
+        const zirconChart = new Chart(zirconCtx, {
             type: 'bar',
             data: {
                 labels: ['Creation Model (6,000y)', 'Observed (Fenton Hill Sample)', 'Uniformitarian (1.5By)'],
@@ -685,6 +725,38 @@ layout: none
             else statusDisplay.innerText = "Pre-Flood 'High-C12' Reservoir Simulation";
             statusDisplay.style.color = mult > 1 ? '#d97706' : '#78716c';
         });
+
+        // ---- Theme toggle (dark / light) ----
+        (function () {
+            const root = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            const sunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+            const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+            function applyChartTheme(theme) {
+                const dark = theme === 'dark';
+                Chart.defaults.color = dark ? '#a8a29e' : '#78716c';
+                Chart.defaults.borderColor = dark ? '#3f3a35' : '#e7e5e4';
+                if (typeof zirconChart !== 'undefined') zirconChart.update();
+                if (typeof pulseChart !== 'undefined') pulseChart.update();
+            }
+
+            function render(theme) {
+                root.setAttribute('data-theme', theme);
+                btn.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+                btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+                applyChartTheme(theme);
+            }
+
+            const current = root.getAttribute('data-theme') || 'dark';
+            render(current);
+
+            btn.addEventListener('click', function () {
+                const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                try { localStorage.setItem('theme', next); } catch (e) {}
+                render(next);
+            });
+        })();
 
     </script>
 </body>
