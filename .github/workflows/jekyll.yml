@@ -33,7 +33,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'      # match the version GitHub Pages uses
+          ruby-version: '4.0.6'      # match the version GitHub Pages uses
           bundler-cache: true      # runs 'bundle install' and caches gems
           cache-version: 0         # bump to force a re-download of cached gems
 
